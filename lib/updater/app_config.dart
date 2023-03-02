@@ -22,8 +22,7 @@ class AppConfig {
     final scriptDir = File(Platform.script.toFilePath()).parent;
 
     /* temp downloaded save path */
-    final downloadFileSavePath =
-        '${(await getTemporaryDirectory()).path}/$fileName';
+    final downloadFileSavePath = '${scriptDir.path}/$fileName';
 
     /*Dio creating instance*/
     final dio = Dio();
@@ -34,12 +33,12 @@ class AppConfig {
       downloadFileSavePath,
       onReceiveProgress: (count, total) {
         final progress = (count / total) * 100;
-        print('progress:* $progress%');
+        print('progress:* ${progress.toStringAsFixed(1)}%');
       },
     );
     if (Platform.isWindows) {
       await unzipContentNewAppFile(
-          downloadFileSavePath, '${scriptDir.path}/app_versions_check');
+          downloadFileSavePath, '${scriptDir.path}/app_versions_check/');
     }
   }
 
@@ -49,21 +48,29 @@ class AppConfig {
 
   static Future unzipContentNewAppFile(
       String filePath, String zipDestination) async {
+    print(filePath);
+    print(zipDestination);
     final bytes = File(filePath).readAsBytesSync();
-    final archive = ZipDecoder().decodeBytes(bytes);
 
-    for (final file in archive) {
-      final filename = file.name;
-      if (file.isFile) {
-        /* extract file */
-        final data = file.content as List<int>;
-        File('$zipDestination/$filename')
-          ..createSync(recursive: true)
-          ..writeAsBytesSync(data);
-      } else {
-        /* extract folder */
-        Directory('$zipDestination/$filename').create(recursive: true);
+    try {
+      final archive = ZipDecoder().decodeBytes(bytes);
+      for (final file in archive) {
+        final filename = file.name;
+
+        if (file.isFile) {
+          /* extract file */
+          final data = file.content as List<int>;
+          File('$zipDestination$filename')
+            ..createSync(recursive: true)
+            ..writeAsBytesSync(data);
+        } else {
+          /* extract folder */
+          Directory('$zipDestination$filename').create(recursive: true);
+        }
       }
+    } catch (e) {
+      print(e);
     }
+    //final archive = ZipDecoder().decodeBytes(bytes);
   }
 }
