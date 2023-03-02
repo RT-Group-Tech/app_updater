@@ -12,6 +12,7 @@ dependencies:
   dio: ^5.0.1
   http: ^0.13.5
   path_provider: ^2.0.13
+  archive: ^3.3.6
 
 dev_dependencies:
   flutter_test:
