@@ -59,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
             print("loading json...");
           }
           AppConfig.loadJsonGithubAppInfos().then((value) async {
-            await AppConfig.downloadAndInstallNewVersion(value['file_name']);
+            await AppConfig.downloadAndInstallNewVersion();
           });
         },
         tooltip: 'Increment',

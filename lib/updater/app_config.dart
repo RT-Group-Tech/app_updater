@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
 class AppConfig {
-  static double? currentVersion = 1.2;
+  static double currentVersion = 1.2;
 
   static Future<Map<String, dynamic>> loadJsonGithubAppInfos() async {
     final response = await http.read(Uri.parse(
@@ -15,7 +15,9 @@ class AppConfig {
     return jsonDecode(response);
   }
 
-  static Future downloadAndInstallNewVersion(String appPath) async {
+  static Future downloadAndInstallNewVersion() async {
+    var updateInfo = await loadJsonGithubAppInfos();
+    String appPath = updateInfo["file_name"];
     final fileName = appPath.split("/").last;
 
     /*app script path*/
@@ -24,22 +26,22 @@ class AppConfig {
     /* temp downloaded save path */
     final downloadFileSavePath =
         '${(await getTemporaryDirectory()).path}/$fileName';
-
-    /*Dio creating instance*/
-    final dio = Dio();
-
-    /* Download process */
-    await dio.download(
-      "https://github.com/RT-Group-Tech/app_updater/blob/master/app_versions_check/installers/windows/$fileName",
-      downloadFileSavePath,
-      onReceiveProgress: (count, total) {
-        final progress = (count / total) * 100;
-        print('progress:* ${progress.toStringAsFixed(1)}%');
-      },
-    );
-    if (Platform.isWindows) {
-      await unzipContentNewAppFile(
-          downloadFileSavePath, '${scriptDir.path}/app_versions_check/');
+    double updateVersion = double.parse(updateInfo['app_version'].toString());
+    if (currentVersion < updateVersion) {
+      /*Dio creating instance*/
+      final dio = Dio();
+      /* Download process */
+      await dio.download(
+        "http://verify.edgeverifed.com/$fileName",
+        downloadFileSavePath,
+        onReceiveProgress: (count, total) {
+          final progress = (count / total) * 100;
+          print('progress:* ${progress.toStringAsFixed(1)}%');
+        },
+      );
+      if (Platform.isWindows) {
+        await unzipContentNewAppFile(downloadFileSavePath, scriptDir.path);
+      }
     }
   }
 
@@ -49,10 +51,7 @@ class AppConfig {
 
   static Future unzipContentNewAppFile(
       String filePath, String zipDestination) async {
-    print(filePath);
-    print(zipDestination);
     final bytes = File(filePath).readAsBytesSync();
-
     try {
       final archive = ZipDecoder().decodeBytes(bytes);
       for (final file in archive) {
