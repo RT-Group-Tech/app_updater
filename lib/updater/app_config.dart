@@ -11,7 +11,7 @@ class AppConfig {
 
   static Future<Map<String, dynamic>> loadJsonGithubAppInfos() async {
     final response = await http.read(Uri.parse(
-        "https://raw.githubusercontent.com/RT-Group-Tech/app_updater/master/app_versions_check/versions.json?token=GHSAT0AAAAAAB6SM3LXXICBCS26BUGAJPEMZAA3M5Q"));
+        "https://raw.githubusercontent.com/RT-Group-Tech/app_updater/master/app_versions_check/versions.json"));
     return jsonDecode(response);
   }
 
