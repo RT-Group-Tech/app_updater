@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app_updater/updater/app_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -58,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
           }
           AppConfig.loadJsonGithubAppInfos().then((value) {
             if (kDebugMode) {
-              print(value);
+              print(value['file_name'].split("/").last);
             }
           });
         },

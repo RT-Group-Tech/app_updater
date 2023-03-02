@@ -17,21 +17,28 @@ class AppConfig {
 
   static Future downloadAndInstallNewVersion(String appPath) async {
     final fileName = appPath.split("/").last;
-    String downloadFilePath =
-        "${(await getApplicationDocumentsDirectory()).path}/$fileName";
 
+    /*app script path*/
+    final scriptDir = File(Platform.script.toFilePath()).parent;
+
+    /* temp downloaded save path */
+    final downloadFileSavePath =
+        '${(await getTemporaryDirectory()).path}/$fileName';
+
+    /*Dio creating instance*/
     final dio = Dio();
 
+    /* Download process */
     await dio.download(
-      "https://github.com/RT-Group-Tech/app_updater/blob/master/app_versions_check/$appPath",
-      downloadFilePath,
+      "https://github.com/RT-Group-Tech/app_updater/blob/master/app_versions_check/installers/windows/$appPath",
+      downloadFileSavePath,
       onReceiveProgress: (count, total) {
         final progress = (count / total) * 100;
         print('progress:* $progress%');
       },
     );
     if (Platform.isWindows) {
-      await openExeFile(downloadFilePath);
+      await unzipContentNewAppFile(downloadFileSavePath, scriptDir.path);
     }
   }
 
