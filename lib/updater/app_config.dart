@@ -22,7 +22,8 @@ class AppConfig {
     final scriptDir = File(Platform.script.toFilePath()).parent;
 
     /* temp downloaded save path */
-    final downloadFileSavePath = '${scriptDir.path}/$fileName';
+    final downloadFileSavePath =
+        '${(await getTemporaryDirectory()).path}/$fileName';
 
     /*Dio creating instance*/
     final dio = Dio();
@@ -60,12 +61,12 @@ class AppConfig {
         if (file.isFile) {
           /* extract file */
           final data = file.content as List<int>;
-          File('$zipDestination$filename')
+          File('$zipDestination/$filename')
             ..createSync(recursive: true)
             ..writeAsBytesSync(data);
         } else {
           /* extract folder */
-          Directory('$zipDestination$filename').create(recursive: true);
+          Directory('$zipDestination/$filename').create(recursive: true);
         }
       }
     } catch (e) {
