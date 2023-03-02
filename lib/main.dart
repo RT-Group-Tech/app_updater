@@ -18,10 +18,10 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.pink),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Updateur'),
     );
   }
 }
@@ -54,13 +54,12 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: () async {
           if (kDebugMode) {
             print("loading json...");
           }
-          AppConfig.loadJsonGithubAppInfos().then((value) async {
-            await AppConfig.downloadAndInstallNewVersion();
-          });
+          await AppConfig.downloadAndInstallNewVersion()
+              .then((value) => setState(() {}));
         },
         tooltip: 'Increment',
         child: const Icon(Icons.add),

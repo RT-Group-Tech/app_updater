@@ -2,5 +2,5 @@
     "name": "app updater",
     "description": "allow to update app ",
     "file_name": "installers/windows/app.zip",
-    "app_version": 1.0
+    "app_version": 1.1
 }
