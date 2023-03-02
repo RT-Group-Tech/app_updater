@@ -30,7 +30,7 @@ class AppConfig {
 
     /* Download process */
     await dio.download(
-      "https://github.com/RT-Group-Tech/app_updater/blob/master/app_versions_check/installers/windows/$appPath",
+      "https://github.com/RT-Group-Tech/app_updater/blob/master/app_versions_check/installers/windows/$fileName",
       downloadFileSavePath,
       onReceiveProgress: (count, total) {
         final progress = (count / total) * 100;
