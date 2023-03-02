@@ -6,7 +6,7 @@ class AppConfig {
   static double? currentVersion = 1.2;
 
   Future<Map<String, dynamic>> loadJsonGithubAppInfos() async {
-    final response = await http.read(Uri.parse(""));
+    final response = await http.read(Uri.parse("  "));
     return jsonDecode(response);
   }
 }
