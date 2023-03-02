@@ -38,7 +38,8 @@ class AppConfig {
       },
     );
     if (Platform.isWindows) {
-      await unzipContentNewAppFile(downloadFileSavePath, scriptDir.path);
+      await unzipContentNewAppFile(
+          downloadFileSavePath, '${scriptDir.path}/app_versions_check');
     }
   }
 

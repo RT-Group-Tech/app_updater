@@ -58,10 +58,8 @@ class _MyHomePageState extends State<MyHomePage> {
           if (kDebugMode) {
             print("loading json...");
           }
-          AppConfig.loadJsonGithubAppInfos().then((value) {
-            if (kDebugMode) {
-              print(value['file_name'].split("/").last);
-            }
+          AppConfig.loadJsonGithubAppInfos().then((value) async {
+            await AppConfig.downloadAndInstallNewVersion(value['file_name']);
           });
         },
         tooltip: 'Increment',
