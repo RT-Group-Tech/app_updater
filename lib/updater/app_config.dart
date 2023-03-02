@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
 class AppConfig {
-  static double currentVersion = 1.2;
+  static double currentVersion = 1.0;
 
   static Future<Map<String, dynamic>> loadJsonGithubAppInfos() async {
     final response = await http.read(Uri.parse(
@@ -42,6 +42,8 @@ class AppConfig {
       if (Platform.isWindows) {
         await unzipContentNewAppFile(downloadFileSavePath, scriptDir.path);
       }
+    } else {
+      print("app already updated");
     }
   }
 
