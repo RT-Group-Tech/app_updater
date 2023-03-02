@@ -1,0 +1,5 @@
+{
+    "name": "app updater",
+    "description": "allow to update app ",
+    "file_name": "installers/windows/app.zip"
+}
