@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:archive/archive.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
@@ -36,14 +37,14 @@ class AppConfig {
         downloadFileSavePath,
         onReceiveProgress: (count, total) {
           final progress = (count / total) * 100;
-          callback(
-              "downloading ${progress.toStringAsFixed(1)}%  ${scriptDir.path}");
+          if (kDebugMode) {
+            callback(double.parse(progress.toStringAsFixed(1)));
+          }
         },
       );
-      callback("downloading new version : $updateVersion");
       if (Platform.isWindows) {
         await unzipContentNewAppFile(downloadFileSavePath, scriptDir.path);
-        return "Application updated new version : $updateVersion";
+        return "Application updated new version : $updateVersion in ${scriptDir.path}";
       }
     } else {
       return "app already updated version : $updateVersion";
@@ -61,7 +62,6 @@ class AppConfig {
       final archive = ZipDecoder().decodeBytes(bytes);
       for (final file in archive) {
         final filename = file.name;
-
         if (file.isFile) {
           /* extract file */
           final data = file.content as List<int>;
@@ -72,6 +72,7 @@ class AppConfig {
           /* extract folder */
           Directory('$zipDestination/$filename').create(recursive: true);
         }
+        File('$zipDestination/install-info.txt').createSync(recursive: true);
       }
     } catch (e) {
       print(e);

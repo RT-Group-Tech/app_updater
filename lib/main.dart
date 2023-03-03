@@ -36,6 +36,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  double percent = 0.0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,20 +44,35 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: const Center(
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
+            const Text(
               'App updater ',
             ),
+            const SizedBox(
+              height: 10,
+            ),
+            Center(
+              child: CircularProgressIndicator(
+                value: percent / 100,
+                semanticsValue: (percent / 100).toString(),
+                semanticsLabel: percent.toString(),
+              ),
+            )
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          AppConfig.downloadAndInstallNewVersion((msg) => showMessage(msg))
-              .then((value) => showMessage(value));
+          AppConfig.downloadAndInstallNewVersion((val) {
+            setState(() {
+              percent = val;
+            });
+          }).then(
+            (value) => showMessage(value),
+          );
         },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
@@ -75,6 +91,9 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
               child: const Text("OK"),
               onPressed: () {
+                setState(() {
+                  percent = 0;
+                });
                 Navigator.pop(context);
               },
             )
