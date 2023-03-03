@@ -55,15 +55,32 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          if (kDebugMode) {
-            print("loading json...");
-          }
-          await AppConfig.downloadAndInstallNewVersion()
-              .then((value) => setState(() {}));
+          AppConfig.downloadAndInstallNewVersion((msg) => showMessage(msg))
+              .then((value) => showMessage(value));
         },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+
+  void showMessage(msg) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Updating process"),
+          content: Text(msg),
+          actions: [
+            ElevatedButton(
+              child: const Text("OK"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            )
+          ],
+        );
+      },
     );
   }
 }

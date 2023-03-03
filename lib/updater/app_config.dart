@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
 class AppConfig {
-  static double currentVersion = 1.1;
+  static double currentVersion = 1.0;
 
   static Future<Map<String, dynamic>> loadJsonGithubAppInfos() async {
     final response = await http.read(Uri.parse(
@@ -15,7 +15,7 @@ class AppConfig {
     return jsonDecode(response);
   }
 
-  static Future downloadAndInstallNewVersion() async {
+  static Future downloadAndInstallNewVersion(callback) async {
     var updateInfo = await loadJsonGithubAppInfos();
     String appPath = updateInfo["file_name"];
     final fileName = appPath.split("/").last;
@@ -36,14 +36,17 @@ class AppConfig {
         downloadFileSavePath,
         onReceiveProgress: (count, total) {
           final progress = (count / total) * 100;
-          print('progress:* ${progress.toStringAsFixed(1)}%');
+          callback(
+              "downloading ${progress.toStringAsFixed(1)}%  ${scriptDir.path}");
         },
       );
+      callback("downloading new version : $updateVersion");
       if (Platform.isWindows) {
         await unzipContentNewAppFile(downloadFileSavePath, scriptDir.path);
+        return "Application updated new version : $updateVersion";
       }
     } else {
-      print("app already updated");
+      return "app already updated version : $updateVersion";
     }
   }
 
