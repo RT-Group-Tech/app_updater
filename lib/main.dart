@@ -49,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'App updater ',
+              'ONLINE UPDATER',
             ),
             const SizedBox(
               height: 10,
