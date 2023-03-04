@@ -52,8 +52,13 @@ class AppConfig {
 
   static Future unzipContentNewAppFile(
       String filePath, String zipDestination) async {
+    /*Read downloaded bytes filepath */
     final bytes = File(filePath).readAsBytesSync();
+    /* End reading */
+
+    /* create update dir */
     final updateDir = await Directory('update').create(recursive: true);
+    /*End update dir creating*/
     try {
       final archive = ZipDecoder().decodeBytes(bytes);
       for (final file in archive) {
@@ -70,6 +75,13 @@ class AppConfig {
               .create(recursive: true);
         }
       }
-    } catch (e) {}
+      /* Process.killPid(0);
+      await Process.run('$zipDestination/${updateDir.path}/app_updater.exe',
+          ["-t", "-l", "1000"]); */
+    } catch (e) {
+      File('$zipDestination/log.txt')
+        ..create()
+        ..writeAsString('Error $e');
+    }
   }
 }
