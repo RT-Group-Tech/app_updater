@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:archive/archive.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
@@ -20,10 +19,8 @@ class AppConfig {
     var updateInfo = await loadJsonGithubAppInfos();
     String appPath = updateInfo["file_name"];
     final fileName = appPath.split("/").last;
-
     /*app script path*/
     final scriptDir = File(Platform.script.toFilePath()).parent;
-
     /* temp downloaded save path */
     final downloadFileSavePath =
         '${(await getTemporaryDirectory()).path}/$fileName';
@@ -37,9 +34,7 @@ class AppConfig {
         downloadFileSavePath,
         onReceiveProgress: (count, total) {
           final progress = (count / total) * 100;
-          if (kDebugMode) {
-            callback(double.parse(progress.toStringAsFixed(1)));
-          }
+          callback(double.parse(progress.toStringAsFixed(1)));
         },
       );
       if (Platform.isWindows) {
@@ -58,6 +53,7 @@ class AppConfig {
   static Future unzipContentNewAppFile(
       String filePath, String zipDestination) async {
     final bytes = File(filePath).readAsBytesSync();
+    final updateDir = await Directory('update').create(recursive: true);
     try {
       final archive = ZipDecoder().decodeBytes(bytes);
       for (final file in archive) {
@@ -65,18 +61,15 @@ class AppConfig {
         if (file.isFile) {
           /* extract file */
           final data = file.content as List<int>;
-          File('$zipDestination/$filename')
+          File('$zipDestination/${updateDir.path}/$filename')
             ..createSync(recursive: true)
             ..writeAsBytesSync(data);
         } else {
           /* extract folder */
-          Directory('$zipDestination/$filename').create(recursive: true);
+          Directory('$zipDestination/${updateDir.path}/$filename')
+              .create(recursive: true);
         }
-        File('$zipDestination/install-info.txt').createSync(recursive: true);
       }
-    } catch (e) {
-      print(e);
-    }
-    //final archive = ZipDecoder().decodeBytes(bytes);
+    } catch (e) {}
   }
 }
